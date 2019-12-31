@@ -5,3 +5,6 @@ multilingual = false
 src = "src"
 title = "StructOpt book"
 description = "The detailed description of `derive(StructOpt)`"
+
+[build]
+build-dir = "docs/"

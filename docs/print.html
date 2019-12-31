@@ -1,0 +1,991 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>StructOpt book</title>
+        
+        <meta name="robots" content="noindex" />
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="The detailed description of `derive(StructOpt)`">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div id="sidebar-scrollbox" class="sidebar-scrollbox">
+                <ol class="chapter"><li class="expanded "><a href="how-to-derive-structopt.html"><strong aria-hidden="true">1.</strong> How to derive(StructOpt)</a></li><li class="expanded "><a href="attributes.html"><strong aria-hidden="true">2.</strong> Attributes</a></li><li><ol class="section"><li class="expanded "><a href="raw-methods.html"><strong aria-hidden="true">2.1.</strong> Raw methods</a></li><li class="expanded "><a href="magical-methods.html"><strong aria-hidden="true">2.2.</strong> MagicalMethods</a></li></ol></li><li class="expanded "><a href="type-magic.html"><strong aria-hidden="true">3.</strong> Type magic</a></li><li class="expanded "><a href="specifying-argument-types.html"><strong aria-hidden="true">4.</strong> Specifying argument types</a></li><li class="expanded "><a href="default-values.html"><strong aria-hidden="true">5.</strong> Default values</a></li><li class="expanded "><a href="help-messages.html"><strong aria-hidden="true">6.</strong> Help messages</a></li><li><ol class="section"><li class="expanded "><a href="long-help-and-help.html"><strong aria-hidden="true">6.1.</strong> long_help and --help</a></li><li class="expanded "><a href="h-vs-help.html"><strong aria-hidden="true">6.2.</strong> -h vs --help (A.K.A help() vs long_help())</a></li><li class="expanded "><a href="doc-comment-preprocessing.html"><strong aria-hidden="true">6.3.</strong> Doc comment preprocessing and #[structopt(verbatim_doc_comment)]</a></li></ol></li><li class="expanded "><a href="environment-variable-fallback.html"><strong aria-hidden="true">7.</strong> Environment variable fallback</a></li><li><ol class="section"><li class="expanded "><a href="auto-deriving-environment-variables.html"><strong aria-hidden="true">7.1.</strong> Auto-deriving environment variables</a></li></ol></li><li class="expanded "><a href="skipping-fields.html"><strong aria-hidden="true">8.</strong> Skipping fields</a></li><li class="expanded "><a href="subcommands.html"><strong aria-hidden="true">9.</strong> Subcommands</a></li><li><ol class="section"><li class="expanded "><a href="optional-subcommands.html"><strong aria-hidden="true">9.1.</strong> Optional subcommands</a></li></ol></li><li class="expanded "><a href="flattening.html"><strong aria-hidden="true">10.</strong> Flattening</a></li><li class="expanded "><a href="custom-string-parsers.html"><strong aria-hidden="true">11.</strong> Custom string parsers</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">StructOpt book</h1>
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2><a class="header" href="#how-to-derivestructopt" id="how-to-derivestructopt">How to derive(StructOpt)</a></h2>
+<p>First, let's look at the example:</p>
+<pre><pre class="playpen"><code class="language-rust should_panic">use std::path::PathBuf;
+use structopt::StructOpt;
+
+#[derive(Debug, StructOpt)]
+#[structopt(name = &quot;example&quot;, about = &quot;An example of StructOpt usage.&quot;)]
+struct Opt {
+    /// Activate debug mode
+    // short and long flags (-d, --debug) will be deduced from the field's name
+    #[structopt(short, long)]
+    debug: bool,
+
+    /// Set speed
+    // we don't want to name it &quot;speed&quot;, need to look smart
+    #[structopt(short = &quot;v&quot;, long = &quot;velocity&quot;, default_value = &quot;42&quot;)]
+    speed: f64,
+
+    /// Input file
+    #[structopt(parse(from_os_str))]
+    input: PathBuf,
+
+    /// Output file, stdout if not present
+    #[structopt(parse(from_os_str))]
+    output: Option&lt;PathBuf&gt;,
+
+    /// Where to write the output: to `stdout` or `file`
+    #[structopt(short)]
+    out_type: String,
+
+    /// File name: only required when `out` is set to `file`
+    #[structopt(name = &quot;FILE&quot;, required_if(&quot;out_type&quot;, &quot;file&quot;))]
+    file_name: String,
+}
+
+fn main() {
+    let opt = Opt::from_args();
+    println!(&quot;{:?}&quot;, opt);
+}
+</code></pre></pre>
+<p>So <code>derive(StructOpt)</code> tells Rust to generate a command line parser,
+and the various <code>structopt</code> attributes are simply
+used for additional parameters.</p>
+<p>First, define a struct, whatever its name. This structure
+corresponds to a <code>clap::App</code>, its fields correspond to <code>clap::Arg</code>
+(unless they're <a href="how-to-derive-structopt.html#subcommands">subcommands</a>),
+and you can adjust these apps and args by <code>#[structopt(...)]</code> <a href="how-to-derive-structopt.html#attributes">attributes</a>.</p>
+<p><strong>Note:</strong></p>
+<hr />
+<p>Keep in mind that <code>StructOpt</code> trait is more than just <code>from_args</code> method.
+It has a number of additional features, including access to underlying
+<code>clap::App</code> via <code>StructOpt::clap()</code>. See the
+<a href="trait.StructOpt.html">trait's reference documentation</a>.</p>
+<hr />
+<h1><a class="header" href="#attributes" id="attributes">Attributes</a></h1>
+<p><code>#[structopt(...)]</code> attributes fall into two categories:</p>
+<ul>
+<li>
+<p><code>structopt</code>'s own <a href="attributes.html#magical-methods">magical methods</a>.</p>
+<p>They are used by <code>structopt</code> itself. They come mostly in
+<code>attr = [&quot;whatever&quot;]</code> form, but some <code>attr(args...)</code> also exist.</p>
+</li>
+<li>
+<p><a href="attributes.html#raw-methods"><code>raw</code> attributes</a>.</p>
+<p>They represent explicit <code>clap::Arg/App</code> method calls.
+They are what used to be explicit <code>#[structopt(raw(...))]</code> attrs in pre-0.3 <code>structopt</code></p>
+</li>
+</ul>
+<p>Every <code>#[structopt(...)]</code> attribute looks like comma-separated sequence of <strong>methods</strong>:</p>
+<pre><code class="language-rust ignore">#[structopt(
+    short, // method with no arguments - always magical
+    long = &quot;--long-option&quot;, // method with one argument
+    required_if(&quot;out&quot;, &quot;file&quot;), // method with one and more args
+    parse(from_os_str = path::to::parser) // some magical methods have their own syntax
+)]
+</code></pre>
+<p><code>#[structopt(...)]</code> attributes can be placed on top of <code>struct</code>, <code>enum</code>,
+<code>struct</code> field or <code>enum</code> variant. Attributes on top of <code>struct</code> or <code>enum</code>
+represent <code>clap::App</code> method calls, field or variant attributes correspond
+to <code>clap::Arg</code> method calls.</p>
+<p>In other words, the <code>Opt</code> struct from the example above
+will be turned into this (<em>details omitted</em>):</p>
+<pre><pre class="playpen"><code class="language-rust">
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span><span class="boring">use structopt::clap::{Arg, App};
+</span>App::new(&quot;example&quot;)
+    .version(&quot;0.2.0&quot;)
+    .about(&quot;An example of StructOpt usage.&quot;)
+.arg(Arg::with_name(&quot;debug&quot;)
+    .help(&quot;Activate debug mode&quot;)
+    .short(&quot;debug&quot;)
+    .long(&quot;debug&quot;))
+.arg(Arg::with_name(&quot;speed&quot;)
+    .help(&quot;Set speed&quot;)
+    .short(&quot;v&quot;)
+    .long(&quot;velocity&quot;)
+    .default_value(&quot;42&quot;))
+// and so on
+<span class="boring">;
+</span><span class="boring">}
+</span></code></pre></pre>
+<h1><a class="header" href="#raw-methods" id="raw-methods">Raw methods</a></h1>
+<p>They are the reason why <code>structopt</code> is so flexible.</p>
+<p>Each and every method from <code>clap::App</code> and <code>clap::Arg</code> can be used directly -
+just <code>#[structopt(method_name = single_arg)]</code> or <code>#[structopt(method_name(arg1, arg2))]</code>
+and it just works. As long as <code>method_name</code> is not one of the magical methods -
+it's just a method call.</p>
+<p><strong>Note:</strong></p>
+<hr />
+<p>&quot;Raw methods&quot; are direct replacement for pre-0.3 structopt's
+<code>#[structopt(raw(...))]</code> attributes, any time you would have used a <code>raw()</code> attribute
+in 0.2 you should use raw method in 0.3.</p>
+<p>Unfortunately, old raw attributes collide with <code>clap::Arg::raw</code> method. To explicitly
+warn users of this change we allow <code>#[structopt(raw())]</code> only with <code>true</code> or <code>false</code>
+literals (this method is supposed to be called only with <code>true</code> anyway).</p>
+<hr />
+<h1><a class="header" href="#magicalmethods" id="magicalmethods">MagicalMethods</a></h1>
+<p>They are the reason why <code>structopt</code> is so easy to use and convenient in most cases.
+Many of them have defaults, some of them get used even if not mentioned.</p>
+<p>Methods may be used on &quot;top level&quot; (on top of a <code>struct</code>, <code>enum</code> or <code>enum</code> variant)
+and/or on &quot;field-level&quot; (on top of a <code>struct</code> field or <em>inside</em> of an enum variant).
+Top level (non-magical) methods correspond to <code>App::method</code> calls, field-level methods
+are <code>Arg::method</code> calls.</p>
+<pre><code class="language-ignore">#[structopt(top_level)]
+struct Foo {
+    #[structopt(field_level)]
+    field: u32
+}
+
+#[structopt(top_level)]
+enum Bar {
+    #[structopt(top_level)]
+    Pineapple {
+        #[structopt(field_level)]
+        chocolate: String
+    },
+
+    #[structopt(top_level)]
+    Orange,
+}
+</code></pre>
+<ul>
+<li>
+<p><code>name</code>: <code>[name = &quot;name&quot;]</code></p>
+<ul>
+<li>
+<p>On top level: <code>App::new(&quot;name&quot;)</code>.</p>
+<p>The binary name displayed in help messages. Defaults to the crate name given by Cargo.</p>
+</li>
+<li>
+<p>On field-level: <code>Arg::with_name(&quot;name&quot;)</code>.</p>
+<p>The name for the argument the field stands for, this name appears in help messages.
+Defaults to a name, deduced from a field, see also
+<a href="magical-methods.html#specifying-argument-types"><code>rename_all</code></a>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>version</code>: <code>[version = &quot;version&quot;]</code></p>
+<p>Usable only on top level: <code>App::version(&quot;version&quot; or env!(CARGO_PKG_VERSION))</code>.</p>
+<p>The version displayed in help messages.
+Defaults to the crate version given by Cargo. If <code>CARGO_PKG_VERSION</code> is not
+set no <code>.version()</code> calls will be generated unless requested.</p>
+</li>
+<li>
+<p><code>no_version</code>: <code>no_version</code></p>
+<p>Usable only on top level. Prevents default <code>App::version</code> call, i.e
+when no <code>version = &quot;version&quot;</code> mentioned.</p>
+</li>
+<li>
+<p><code>author</code>: <code>author [= &quot;author&quot;]</code></p>
+<p>Usable only on top level: <code>App::author(&quot;author&quot; or env!(CARGO_PKG_AUTHOR))</code>.</p>
+<p>Author/maintainer of the binary, this name appears in help messages.
+Defaults to the crate author given by cargo, but only when <code>author</code> explicitly mentioned.</p>
+</li>
+<li>
+<p><code>about</code>: <code>about [= &quot;about&quot;]</code></p>
+<p>Usable only on top level: <code>App::about(&quot;about&quot; or env!(CARGO_PKG_DESCRIPTION))</code>.</p>
+<p>Short description of the binary, appears in help messages.
+Defaults to the crate description given by cargo,
+but only when <code>about</code> explicitly mentioned.</p>
+</li>
+<li>
+<p><a href="magical-methods.html#specifying-argument-types"><code>short</code></a>: <code>short [= &quot;short-opt-name&quot;]</code></p>
+<p>Usable only on field-level.</p>
+</li>
+<li>
+<p><a href="magical-methods.html#specifying-argument-types"><code>long</code></a>: <code>long [= &quot;long-opt-name&quot;]</code></p>
+<p>Usable only on field-level.</p>
+</li>
+<li>
+<p><a href="magical-methods.html#default-values"><code>defautl_value</code></a>: <code>default_value [= &quot;default value&quot;]</code></p>
+<p>Usable only on field-level.</p>
+</li>
+<li>
+<p><a href="magical-methods.html#specifying-argument-types"><code>rename_all</code></a>:
+[<code>rename_all = &quot;kebab&quot;/&quot;snake&quot;/&quot;screaming-snake&quot;/&quot;camel&quot;/&quot;pascal&quot;/&quot;verbatim&quot;]</code></p>
+<p>Usable both on top level and field level.</p>
+</li>
+<li>
+<p><a href="magical-methods.html#custom-string-parsers"><code>parse</code></a>: <code>parse(type [= path::to::parser::fn])</code></p>
+<p>Usable only on field-level.</p>
+</li>
+<li>
+<p><a href="magical-methods.html#skipping-fields"><code>skip</code></a>: <code>skip [= expr]</code></p>
+<p>Usable only on field-level.</p>
+</li>
+<li>
+<p><a href="magical-methods.html#flattening"><code>flatten</code></a>: <code>flatten</code></p>
+<p>Usable only on field-level.</p>
+</li>
+<li>
+<p><a href="magical-methods.html#subcommands"><code>subcommand</code></a>: <code>subcommand</code></p>
+<p>Usable only on field-level.</p>
+</li>
+<li>
+<p><a href="magical-methods.html#environment-variable-fallback"><code>env</code></a>: <code>env [= str_literal]</code></p>
+<p>Usable only on field-level.</p>
+</li>
+<li>
+<p><a href="magical-methods.html##auto-deriving-environment-variables"><code>rename_all_env</code></a>:
+[<code>rename_all_env = &quot;kebab&quot;/&quot;snake&quot;/&quot;screaming-snake&quot;/&quot;camel&quot;/&quot;pascal&quot;/&quot;verbatim&quot;]</code></p>
+<p>Usable both on top level and field level.</p>
+</li>
+<li>
+<p><a href="magical-methods.html#doc-comment-preprocessing-and-structoptverbatim_doc_comment"><code>verbatim_doc_comment</code></a>:
+<code>verbatim_doc_comment</code></p>
+<p>Usable both on top level and field level.</p>
+</li>
+</ul>
+<h1><a class="header" href="#type-magic" id="type-magic">Type magic</a></h1>
+<p>One of major things that makes <code>structopt</code> so awesome is it's type magic.
+Do you want optional positional argument? Use <code>Option&lt;T&gt;</code>! Or perhaps optional argument
+that optionally takes value (<code>[--opt=[val]]</code>)? Use <code>Option&lt;Option&lt;T&gt;&gt;</code>!</p>
+<p>Here is the table of types and <code>clap</code> methods they correspond to:</p>
+<table><thead><tr><th>Type</th><th>Effect</th><th>Added method call to <code>clap::Arg</code></th></tr></thead><tbody>
+<tr><td><code>bool</code></td><td><code>true</code> if the flag is present</td><td><code>.takes_value(false).multiple(false)</code></td></tr>
+<tr><td><code>Option&lt;T: FromStr&gt;</code></td><td>optional positional argument or option</td><td><code>.takes_value(true).multiple(false)</code></td></tr>
+<tr><td><code>Option&lt;Option&lt;T: FromStr&gt;&gt;</code></td><td>optional option with optional value</td><td><code>.takes_value(true).multiple(false).min_values(0).max_values(1)</code></td></tr>
+<tr><td><code>Vec&lt;T: FromStr&gt;</code></td><td>list of options or the other positional arguments</td><td><code>.takes_value(true).multiple(true)</code></td></tr>
+<tr><td><code>Option&lt;Vec&lt;T: FromStr&gt;</code></td><td>optional list of options</td><td><code>.takes_values(true).multiple(true).min_values(0)</code></td></tr>
+<tr><td><code>T: FromStr</code></td><td>required option or positional argument</td><td><code>.takes_value(true).multiple(false).required(!has_default)</code></td></tr>
+</tbody></table>
+<p>The <code>FromStr</code> trait is used to convert the argument to the given
+type, and the <code>Arg::validator</code> method is set to a method using
+<code>to_string()</code> (<code>FromStr::Err</code> must implement <code>std::fmt::Display</code>).
+If you would like to use a custom string parser other than <code>FromStr</code>, see
+the <a href="type-magic.html#custom-string-parsers">same titled section</a> below.</p>
+<p><strong>Important:</strong></p>
+<hr />
+<p>Pay attention that <em>only literal occurrence</em> of this types is special, for example
+<code>Option&lt;T&gt;</code> is special while <code>::std::option::Option&lt;T&gt;</code> is not.</p>
+<p>If you need to avoid special casing you can make a <code>type</code> alias and
+use it in place of the said type.</p>
+<hr />
+<p><strong>Note:</strong></p>
+<hr />
+<p><code>bool</code> cannot be used as positional argument unless you provide an explicit parser.
+If you need a positional bool, for example to parse <code>true</code> or <code>false</code>, you must
+annotate the field with explicit <a href="type-magic.html#custom-string-parsers"><code>#[structopt(parse(...))]</code></a>.</p>
+<hr />
+<p>Thus, the <code>speed</code> argument is generated as:</p>
+<pre><code># extern crate clap;
+# fn parse_validator&lt;T&gt;(_: String) -&gt; Result&lt;(), String&gt; { unimplemented!() }
+# fn main() {
+clap::Arg::with_name(&quot;speed&quot;)
+    .takes_value(true)
+    .multiple(false)
+    .required(false)
+    .validator(parse_validator::&lt;f64&gt;)
+    .short(&quot;v&quot;)
+    .long(&quot;velocity&quot;)
+    .help(&quot;Set speed&quot;)
+    .default_value(&quot;42&quot;);
+# }
+</code></pre>
+<h1><a class="header" href="#specifying-argument-types" id="specifying-argument-types">Specifying argument types</a></h1>
+<p>There are three types of arguments that can be supplied to each
+(sub-)command:</p>
+<ul>
+<li>short (e.g. <code>-h</code>),</li>
+<li>long (e.g. <code>--help</code>)</li>
+<li>and positional.</li>
+</ul>
+<p>Like clap, structopt defaults to creating positional arguments.</p>
+<p>If you want to generate a long argument you can specify either
+<code>long = $NAME</code>, or just <code>long</code> to get a long flag generated using
+the field name.  The generated casing style can be modified using
+the <code>rename_all</code> attribute. See the <code>rename_all</code> example for more.</p>
+<p>For short arguments, <code>short</code> will use the first letter of the
+field name by default, but just like the long option it's also
+possible to use a custom letter through <code>short = $LETTER</code>.</p>
+<p>If an argument is renamed using <code>name = $NAME</code> any following call to
+<code>short</code> or <code>long</code> will use the new name.</p>
+<p><strong>Attention</strong>: If these arguments are used without an explicit name
+the resulting flag is going to be renamed using <code>kebab-case</code> if the
+<code>rename_all</code> attribute was not specified previously. The same is true
+for subcommands with implicit naming through the related data structure.</p>
+<pre><code>use structopt::StructOpt;
+
+#[derive(StructOpt)]
+#[structopt(rename_all = &quot;kebab-case&quot;)]
+struct Opt {
+    /// This option can be specified with something like `--foo-option
+    /// value` or `--foo-option=value`
+    #[structopt(long)]
+    foo_option: String,
+
+    /// This option can be specified with something like `-b value` (but
+    /// not `--bar-option value`).
+    #[structopt(short)]
+    bar_option: String,
+
+    /// This option can be specified either `--baz value` or `-z value`.
+    #[structopt(short = &quot;z&quot;, long = &quot;baz&quot;)]
+    baz_option: String,
+
+    /// This option can be specified either by `--custom value` or
+    /// `-c value`.
+    #[structopt(name = &quot;custom&quot;, long, short)]
+    custom_option: String,
+
+    /// This option is positional, meaning it is the first unadorned string
+    /// you provide (multiple others could follow).
+    my_positional: String,
+
+    /// This option is skipped and will be filled with the default value
+    /// for its type (in this case 0).
+    #[structopt(skip)]
+    skipped: u32,
+
+}
+
+# fn main() {
+# Opt::from_clap(&amp;Opt::clap().get_matches_from(
+#    &amp;[&quot;test&quot;, &quot;--foo-option&quot;, &quot;&quot;, &quot;-b&quot;, &quot;&quot;, &quot;--baz&quot;, &quot;&quot;, &quot;--custom&quot;, &quot;&quot;, &quot;positional&quot;]));
+# }
+</code></pre>
+<h1><a class="header" href="#default-values" id="default-values">Default values</a></h1>
+<p>In clap, default values for options can be specified via <a href="https://docs.rs/clap/2.33.0/clap/struct.Arg.html#method.default_value"><code>Arg::default_value</code></a>.</p>
+<p>Of course, you can use as a raw method:</p>
+<pre><code># use structopt::StructOpt;
+#[derive(StructOpt)]
+struct Opt {
+    #[structopt(default_value = &quot;&quot;, long)]
+    prefix: String
+}
+</code></pre>
+<p>This is quite mundane and error-prone to type the <code>&quot;...&quot;</code> default by yourself,
+especially when the Rust ecosystem uses the <a href="https://doc.rust-lang.org/std/default/trait.Default.html"><code>Default</code></a> trait for that.
+It would be wonderful to have <code>structopt</code> to take the <code>Default_default</code> and fill it
+for you. And yes, <code>structopt</code> can do that.</p>
+<p>Unfortunately, <code>default_value</code> takes <code>&amp;str</code> but <code>Default::default</code>
+gives us some <code>Self</code> value. We need to map <code>Self</code> to <code>&amp;str</code> somehow.</p>
+<p><code>structopt</code> solves this problem via <a href="https://doc.rust-lang.org/std/string/trait.ToString.html"><code>ToString</code></a> trait.</p>
+<p>To be able to use auto-default the type must implement <em>both</em> <code>Default</code> and <code>ToString</code>:</p>
+<pre><code># use structopt::StructOpt;
+#[derive(StructOpt)]
+struct Opt {
+    // just leave the `= &quot;...&quot;` part and structopt will figure it for you
+    #[structopt(default_value, long)]
+    prefix: String // `String` implements both `Default` and `ToString`
+}
+</code></pre>
+<h2><a class="header" href="#help-messages" id="help-messages">Help messages</a></h2>
+<p>In clap, help messages for the whole binary can be specified
+via <a href="https://docs.rs/clap/2/clap/struct.App.html#method.about"><code>App::about</code></a> and <a href="https://docs.rs/clap/2/clap/struct.App.html#method.long_about"><code>App::long_about</code></a> while help messages
+for individual arguments can be specified via <a href="https://docs.rs/clap/2/clap/struct.Arg.html#method.help"><code>Arg::help</code></a> and <a href="https://docs.rs/clap/2/clap/struct.Arg.html#method.long_help"><code>Arg::long_help</code></a>&quot;.</p>
+<p><code>long_*</code> variants are used when user calls the program with
+<code>--help</code> and &quot;short&quot; variants are used with <code>-h</code> flag. In <code>structopt</code>,
+you can use them via <a href="help-messages.html#raw-methods">raw methods</a>, for example:</p>
+<pre><code># use structopt::StructOpt;
+
+#[derive(StructOpt)]
+#[structopt(about = &quot;I am a program and I work, just pass `-h`&quot;)]
+struct Foo {
+  #[structopt(short, help = &quot;Pass `-h` and you'll see me!&quot;)]
+  bar: String
+}
+</code></pre>
+<p>For convenience, doc comments can be used instead of raw methods
+(this example works exactly like the one above):</p>
+<pre><code># use structopt::StructOpt;
+
+#[derive(StructOpt)]
+/// I am a program and I work, just pass `-h`
+struct Foo {
+  /// Pass `-h` and you'll see me!
+  bar: String
+}
+</code></pre>
+<p>Doc comments on <a href="help-messages.html#magical-methods">top-level</a> will be turned into
+<code>App::about/long_about</code> call (see below), doc comments on field-level are
+<code>Arg::help/long_help</code> calls.</p>
+<p><strong>Important:</strong></p>
+<hr />
+<p>Raw methods have priority over doc comments!</p>
+<p><strong>Top level doc comments always generate <code>App::about/long_about</code> calls!</strong>
+If you really want to use the <code>App::help/long_help</code> methods (you likely don't),
+use a raw method to override the <code>App::about</code> call generated from the doc comment.</p>
+<hr />
+<h3><a class="header" href="#long_help-and---help" id="long_help-and---help"><code>long_help</code> and <code>--help</code></a></h3>
+<p>A message passed to [<code>App::long_help</code>] or [<code>Arg::long_about</code>] will be displayed whenever
+your program is called with <code>--help</code> instead of <code>-h</code>. Of course, you can
+use them via raw methods as described <a href="long-help-and-help.html#help-messages">above</a>.</p>
+<p>The more convenient way is to use a so-called &quot;long&quot; doc comment:</p>
+<pre><code># use structopt::StructOpt;
+#[derive(StructOpt)]
+/// Hi there, I'm Robo!
+///
+/// I like beeping, stumbling, eating your electricity,
+/// and making records of you singing in a shower.
+/// Pay up, or I'll upload it to youtube!
+struct Robo {
+    /// Call my brother SkyNet.
+    ///
+    /// I am artificial superintelligence. I won't rest
+    /// until I'll have destroyed humanity. Enjoy your
+    /// pathetic existence, you mere mortals.
+    #[structopt(long)]
+    kill_all_humans: bool
+}
+</code></pre>
+<p>A long doc comment consists of three parts:</p>
+<ul>
+<li>Short summary</li>
+<li>A blank line (whitespace only)</li>
+<li>Detailed description, all the rest</li>
+</ul>
+<p>In other words, &quot;long&quot; doc comment consists of two or more paragraphs,
+with the first being a summary and the rest being the detailed description.</p>
+<p><strong>A long comment will result in two method calls</strong>, <code>help(&lt;summary&gt;)</code> and
+<code>long_help(&lt;whole comment&gt;)</code>, so clap will display the summary with <code>-h</code>
+and the whole help message on <code>--help</code> (see below).</p>
+<p>So, the example above will be turned into this (details omitted):</p>
+<pre><code>clap::App::new(&quot;&lt;name&gt;&quot;)
+    .about(&quot;Hi there, I'm Robo!&quot;)
+    .long_about(&quot;Hi there, I'm Robo!\n\n\
+                 I like beeping, stumbling, eating your electricity,\
+                 and making records of you singing in a shower.\
+                 Pay up or I'll upload it to youtube!&quot;)
+// args...
+# ;
+</code></pre>
+<h3><a class="header" href="#-h-vs---help-aka-help-vs-long_help" id="-h-vs---help-aka-help-vs-long_help"><code>-h</code> vs <code>--help</code> (A.K.A <code>help()</code> vs <code>long_help()</code>)</a></h3>
+<p>The <code>-h</code> flag is not the same as <code>--help</code>.</p>
+<p>-h corresponds to Arg::help/App::about and requests short &quot;summary&quot; messages
+while --help corresponds to Arg::long_help/App::long_about and requests more
+detailed, descriptive messages.</p>
+<p>It is entirely up to <code>clap</code> what happens if you used only one of
+<a href="https://docs.rs/clap/2/clap/struct.Arg.html#method.help"><code>Arg::help</code></a>/<a href="https://docs.rs/clap/2/clap/struct.Arg.html#method.long_help"><code>Arg::long_help</code></a>, see <code>clap</code>'s documentation for these methods.</p>
+<p>As of clap v2.33, if only a short message (<a href="https://docs.rs/clap/2/clap/struct.Arg.html#method.help"><code>Arg::help</code></a>) or only
+a long (<a href="https://docs.rs/clap/2/clap/struct.Arg.html#method.long_help"><code>Arg::long_help</code></a>) message is provided, clap will use it
+for both -h and --help. The same logic applies to <code>about/long_about</code>.</p>
+<h3><a class="header" href="#doc-comment-preprocessing-and-structoptverbatim_doc_comment" id="doc-comment-preprocessing-and-structoptverbatim_doc_comment">Doc comment preprocessing and <code>#[structopt(verbatim_doc_comment)]</code></a></h3>
+<p><code>structopt</code> applies some preprocessing to doc comments to ease the most common uses:</p>
+<ul>
+<li>
+<p>Strip leading and trailing whitespace from every line, if present.</p>
+</li>
+<li>
+<p>Strip leading and trailing blank lines, if present.</p>
+</li>
+<li>
+<p>Interpret each group of non-empty lines as a word-wrapped paragraph.</p>
+<p>We replace newlines within paragraphs with spaces to allow the output
+to be re-wrapped to the terminal width.</p>
+</li>
+<li>
+<p>Strip any excess blank lines so that there is exactly one per paragraph break.</p>
+</li>
+<li>
+<p>If the first paragraph ends in exactly one period,
+remove the trailing period (i.e. strip trailing periods but not trailing ellipses).</p>
+</li>
+</ul>
+<p>Sometimes you don't want this preprocessing to apply, for example the comment contains
+some ASCII art or markdown tables, you would need to preserve LFs along with
+blank lines and the leading/trailing whitespace. You can ask <code>structopt</code> to preserve them
+via <code>#[structopt(verbatim_doc_comment)]</code> attribute.</p>
+<p><strong>This attribute must be applied to each field separately</strong>, there's no global switch.</p>
+<p><strong>Important:</strong></p>
+<hr />
+<p>Keep in mind that <code>structopt</code> will <em>still</em> remove one leading space from each
+line, even if this attribute is present, to allow for a space between
+<code>///</code> and the content.</p>
+<p>Also, <code>structopt</code> will <em>still</em> remove leading and trailing blank lines so
+these formats are equivalent:</p>
+<pre><code class="language-ignore">/** This is a doc comment
+
+Hello! */
+
+/**
+This is a doc comment
+
+Hello!
+*/
+
+/// This is a doc comment
+///
+/// Hello!
+</code></pre>
+<hr />
+<h2><a class="header" href="#environment-variable-fallback" id="environment-variable-fallback">Environment variable fallback</a></h2>
+<p>It is possible to specify an environment variable fallback option for an arguments
+so that its value is taken from the specified environment variable if not
+given through the command-line:</p>
+<pre><code># use structopt::StructOpt;
+
+#[derive(StructOpt)]
+struct Foo {
+  #[structopt(short, long, env = &quot;PARAMETER_VALUE&quot;)]
+  parameter_value: String
+}
+# fn main() {}
+</code></pre>
+<p>By default, values from the environment are shown in the help output (i.e. when invoking
+<code>--help</code>):</p>
+<pre><code class="language-shell">$ cargo run -- --help
+...
+OPTIONS:
+  -p, --parameter-value &lt;parameter-value&gt;     [env: PARAMETER_VALUE=env_value]
+</code></pre>
+<p>In some cases this may be undesirable, for example when being used for passing
+credentials or secret tokens. In those cases you can use <code>hide_env_values</code> to avoid
+having structopt emit the actual secret values:</p>
+<pre><code># use structopt::StructOpt;
+
+#[derive(StructOpt)]
+struct Foo {
+  #[structopt(long = &quot;secret&quot;, env = &quot;SECRET_VALUE&quot;, hide_env_values = true)]
+  secret_value: String
+}
+</code></pre>
+<h3><a class="header" href="#auto-deriving-environment-variables" id="auto-deriving-environment-variables">Auto-deriving environment variables</a></h3>
+<p>Environment variables tend to be called after the corresponding <code>struct</code>'s field,
+as in example above. The field is <code>secret_value</code> and the env var is &quot;SECRET_VALUE&quot;;
+the name is the same, except casing is different.</p>
+<p>It's pretty tedious and error-prone to type the same name twice,
+so you can ask <code>structopt</code> to do that for you.</p>
+<pre><code># use structopt::StructOpt;
+
+#[derive(StructOpt)]
+struct Foo {
+  #[structopt(long = &quot;secret&quot;, env)]
+  secret_value: String
+}
+</code></pre>
+<p>It works just like <code>#[structopt(short/long)]</code>: if <code>env</code> is not set to some concrete
+value the value will be derived from the field's name. This is controlled by
+<code>#[structopt(rename_all_env)]</code>.</p>
+<p><code>rename_all_env</code> works exactly as <code>rename_all</code> (including overriding)
+except default casing is <code>SCREAMING_SNAKE_CASE</code> instead of <code>kebab-case</code>.</p>
+<h2><a class="header" href="#skipping-fields" id="skipping-fields">Skipping fields</a></h2>
+<p>Sometimes you may want to add a field to your <code>Opt</code> struct that is not
+a command line option and <code>clap</code> should know nothing about it. You can ask
+<code>structopt</code> to skip the field entirely via <code>#[structopt(skip = value)]</code>
+(<code>value</code> must implement <code>Into&lt;FieldType&gt;</code>)
+or <code>#[structopt(skip)]</code> if you want assign the field with <code>Default::default()</code>
+(obviously, the field's type must implement <code>Default</code>).</p>
+<pre><code># use structopt::StructOpt;
+#[derive(StructOpt)]
+pub struct Opt {
+    #[structopt(long, short)]
+    number: u32,
+
+    // these fields are to be assigned with Default::default()
+
+    #[structopt(skip)]
+    k: String,
+    #[structopt(skip)]
+    v: Vec&lt;u32&gt;,
+
+    // these fields get set explicitly
+
+    #[structopt(skip = vec![1, 2, 3])]
+    k2: Vec&lt;u32&gt;,
+    #[structopt(skip = &quot;cake&quot;)] // &amp;str implements Into&lt;String&gt;
+    v2: String,
+}
+</code></pre>
+<h2><a class="header" href="#subcommands" id="subcommands">Subcommands</a></h2>
+<p>Some applications, especially large ones, split their functionality
+through the use of &quot;subcommands&quot;. Each of these act somewhat like a separate
+command, but is part of the larger group.
+One example is <code>git</code>, which has subcommands such as <code>add</code>, <code>commit</code>,
+and <code>clone</code>, to mention just a few.</p>
+<p><code>clap</code> has this functionality, and <code>structopt</code> supports it through enums:</p>
+<pre><code># use structopt::StructOpt;
+
+# use std::path::PathBuf;
+#[derive(StructOpt)]
+#[structopt(about = &quot;the stupid content tracker&quot;)]
+enum Git {
+    Add {
+        #[structopt(short)]
+        interactive: bool,
+        #[structopt(short)]
+        patch: bool,
+        #[structopt(parse(from_os_str))]
+        files: Vec&lt;PathBuf&gt;
+    },
+    Fetch {
+        #[structopt(long)]
+        dry_run: bool,
+        #[structopt(long)]
+        all: bool,
+        repository: Option&lt;String&gt;
+    },
+    Commit {
+        #[structopt(short)]
+        message: Option&lt;String&gt;,
+        #[structopt(short)]
+        all: bool
+    }
+}
+# fn main() {}
+</code></pre>
+<p>Using <code>derive(StructOpt)</code> on an enum instead of a struct will produce
+a <code>clap::App</code> that only takes subcommands. So <code>git add</code>, <code>git fetch</code>,
+and <code>git commit</code> would be commands allowed for the above example.</p>
+<p><code>structopt</code> also provides support for applications where certain flags
+need to apply to all subcommands, as well as nested subcommands:</p>
+<pre><code># use structopt::StructOpt;
+# fn main() {}
+#[derive(StructOpt)]
+struct MakeCookie {
+    #[structopt(name = &quot;supervisor&quot;, default_value = &quot;Puck&quot;, long = &quot;supervisor&quot;)]
+    supervising_faerie: String,
+    /// The faerie tree this cookie is being made in.
+    tree: Option&lt;String&gt;,
+    #[structopt(subcommand)]  // Note that we mark a field as a subcommand
+    cmd: Command
+}
+
+#[derive(StructOpt)]
+enum Command {
+    /// Pound acorns into flour for cookie dough.
+    Pound {
+        acorns: u32
+    },
+    /// Add magical sparkles -- the secret ingredient!
+    Sparkle {
+        #[structopt(short, parse(from_occurrences))]
+        magicality: u64,
+        #[structopt(short)]
+        color: String
+    },
+    Finish(Finish),
+}
+
+// Subcommand can also be externalized by using a 1-uple enum variant
+#[derive(StructOpt)]
+struct Finish {
+    #[structopt(short)]
+    time: u32,
+    #[structopt(subcommand)]  // Note that we mark a field as a subcommand
+    finish_type: FinishType
+}
+
+// subsubcommand!
+#[derive(StructOpt)]
+enum FinishType {
+    Glaze {
+        applications: u32
+    },
+    Powder {
+        flavor: String,
+        dips: u32
+    }
+}
+</code></pre>
+<p>Marking a field with <code>structopt(subcommand)</code> will add the subcommands of the
+designated enum to the current <code>clap::App</code>. The designated enum <em>must</em> also
+be derived <code>StructOpt</code>. So the above example would take the following
+commands:</p>
+<ul>
+<li><code>make-cookie pound 50</code></li>
+<li><code>make-cookie sparkle -mmm --color &quot;green&quot;</code></li>
+<li><code>make-cookie finish 130 glaze 3</code></li>
+</ul>
+<h3><a class="header" href="#optional-subcommands" id="optional-subcommands">Optional subcommands</a></h3>
+<p>Subcommands may be optional:</p>
+<pre><code># use structopt::StructOpt;
+# fn main() {}
+#[derive(StructOpt)]
+struct Foo {
+    file: String,
+    #[structopt(subcommand)]
+    cmd: Option&lt;Command&gt;
+}
+
+#[derive(StructOpt)]
+enum Command {
+    Bar,
+    Baz,
+    Quux
+}
+</code></pre>
+<h2><a class="header" href="#flattening" id="flattening">Flattening</a></h2>
+<p>It can sometimes be useful to group related arguments in a substruct,
+while keeping the command-line interface flat. In these cases you can mark
+a field as <code>flatten</code> and give it another type that derives <code>StructOpt</code>:</p>
+<pre><code># use structopt::StructOpt;
+# fn main() {}
+#[derive(StructOpt)]
+struct Cmdline {
+    /// switch on verbosity
+    #[structopt(short)]
+    verbose: bool,
+    #[structopt(flatten)]
+    daemon_opts: DaemonOpts,
+}
+
+#[derive(StructOpt)]
+struct DaemonOpts {
+    /// daemon user
+    #[structopt(short)]
+    user: String,
+    /// daemon group
+    #[structopt(short)]
+    group: String,
+}
+</code></pre>
+<p>In this example, the derived <code>Cmdline</code> parser will support the options <code>-v</code>,
+<code>-u</code> and <code>-g</code>.</p>
+<p>This feature also makes it possible to define a <code>StructOpt</code> struct in a
+library, parse the corresponding arguments in the main argument parser, and
+pass off this struct to a handler provided by that library.</p>
+<h2><a class="header" href="#custom-string-parsers" id="custom-string-parsers">Custom string parsers</a></h2>
+<p>If the field type does not have a <code>FromStr</code> implementation, or you would
+like to provide a custom parsing scheme other than <code>FromStr</code>, you may
+provide a custom string parser using <code>parse(...)</code> like this:</p>
+<pre><code># use structopt::StructOpt;
+# fn main() {}
+use std::num::ParseIntError;
+use std::path::PathBuf;
+
+fn parse_hex(src: &amp;str) -&gt; Result&lt;u32, ParseIntError&gt; {
+    u32::from_str_radix(src, 16)
+}
+
+#[derive(StructOpt)]
+struct HexReader {
+    #[structopt(short, parse(try_from_str = parse_hex))]
+    number: u32,
+    #[structopt(short, parse(from_os_str))]
+    output: PathBuf,
+}
+</code></pre>
+<p>There are five kinds of custom parsers:</p>
+<table><thead><tr><th>Kind</th><th>Signature</th><th>Default</th></tr></thead><tbody>
+<tr><td><code>from_str</code></td><td><code>fn(&amp;str) -&gt; T</code></td><td><code>::std::convert::From::from</code></td></tr>
+<tr><td><code>try_from_str</code></td><td><code>fn(&amp;str) -&gt; Result&lt;T, E&gt;</code></td><td><code>::std::str::FromStr::from_str</code></td></tr>
+<tr><td><code>from_os_str</code></td><td><code>fn(&amp;OsStr) -&gt; T</code></td><td><code>::std::convert::From::from</code></td></tr>
+<tr><td><code>try_from_os_str</code></td><td><code>fn(&amp;OsStr) -&gt; Result&lt;T, OsString&gt;</code></td><td>(no default function)</td></tr>
+<tr><td><code>from_occurrences</code></td><td><code>fn(u64) -&gt; T</code></td><td><code>value as T</code></td></tr>
+<tr><td><code>from_flag</code></td><td><code>fn(bool) -&gt; T</code></td><td><code>::std::convert::From::from</code></td></tr>
+</tbody></table>
+<p>The <code>from_occurrences</code> parser is special. Using <code>parse(from_occurrences)</code>
+results in the <em>number of flags occurrences</em> being stored in the relevant
+field or being passed to the supplied function. In other words, it converts
+something like <code>-vvv</code> to <code>3</code>. This is equivalent to
+<code>.takes_value(false).multiple(true)</code>. Note that the default parser can only
+be used with fields of integer types (<code>u8</code>, <code>usize</code>, <code>i64</code>, etc.).</p>
+<p>The <code>from_flag</code> parser is also special. Using <code>parse(from_flag)</code> or
+<code>parse(from_flag = some_func)</code> will result in the field being treated as a
+flag even if it does not have type <code>bool</code>.</p>
+<p>When supplying a custom string parser, <code>bool</code> will not be treated specially:</p>
+<table><thead><tr><th>Type</th><th>Effect</th><th>Added method call to <code>clap::Arg</code></th></tr></thead><tbody>
+<tr><td><code>Option&lt;T&gt;</code></td><td>optional argument</td><td><code>.takes_value(true).multiple(false)</code></td></tr>
+<tr><td><code>Vec&lt;T&gt;</code></td><td>list of arguments</td><td><code>.takes_value(true).multiple(true)</code></td></tr>
+<tr><td><code>T</code></td><td>required argument</td><td><code>.takes_value(true).multiple(false).required(!has_default)</code></td></tr>
+</tbody></table>
+<p>In the <code>try_from_*</code> variants, the function will run twice on valid input:
+once to validate, and once to parse. Hence, make sure the function is
+side-effect-free.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+        
+        
+        <script type="text/javascript">
+            window.playpen_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+        
+        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+        
+        
+
+    </body>
+</html>
