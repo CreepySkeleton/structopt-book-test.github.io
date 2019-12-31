@@ -1,0 +1,261 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Custom string parsers - StructOpt book</title>
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="The detailed description of `derive(StructOpt)`">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+        <link rel="stylesheet" href="book.css">
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div id="sidebar-scrollbox" class="sidebar-scrollbox">
+                <ol class="chapter"><li class="expanded "><a href="how-to-derive-structopt.html"><strong aria-hidden="true">1.</strong> How to derive(StructOpt)</a></li><li class="expanded "><a href="attributes.html"><strong aria-hidden="true">2.</strong> Attributes</a></li><li><ol class="section"><li class="expanded "><a href="raw-methods.html"><strong aria-hidden="true">2.1.</strong> Raw methods</a></li><li class="expanded "><a href="magical-methods.html"><strong aria-hidden="true">2.2.</strong> MagicalMethods</a></li></ol></li><li class="expanded "><a href="type-magic.html"><strong aria-hidden="true">3.</strong> Type magic</a></li><li class="expanded "><a href="specifying-argument-types.html"><strong aria-hidden="true">4.</strong> Specifying argument types</a></li><li class="expanded "><a href="default-values.html"><strong aria-hidden="true">5.</strong> Default values</a></li><li class="expanded "><a href="help-messages.html"><strong aria-hidden="true">6.</strong> Help messages</a></li><li><ol class="section"><li class="expanded "><a href="long-help-and-help.html"><strong aria-hidden="true">6.1.</strong> long_help and --help</a></li><li class="expanded "><a href="h-vs-help.html"><strong aria-hidden="true">6.2.</strong> -h vs --help (A.K.A help() vs long_help())</a></li><li class="expanded "><a href="doc-comment-preprocessing.html"><strong aria-hidden="true">6.3.</strong> Doc comment preprocessing and #[structopt(verbatim_doc_comment)]</a></li></ol></li><li class="expanded "><a href="environment-variable-fallback.html"><strong aria-hidden="true">7.</strong> Environment variable fallback</a></li><li><ol class="section"><li class="expanded "><a href="auto-deriving-environment-variables.html"><strong aria-hidden="true">7.1.</strong> Auto-deriving environment variables</a></li></ol></li><li class="expanded "><a href="skipping-fields.html"><strong aria-hidden="true">8.</strong> Skipping fields</a></li><li class="expanded "><a href="subcommands.html"><strong aria-hidden="true">9.</strong> Subcommands</a></li><li><ol class="section"><li class="expanded "><a href="optional-subcommands.html"><strong aria-hidden="true">9.1.</strong> Optional subcommands</a></li></ol></li><li class="expanded "><a href="flattening.html"><strong aria-hidden="true">10.</strong> Flattening</a></li><li class="expanded "><a href="custom-string-parsers.html" class="active"><strong aria-hidden="true">11.</strong> Custom string parsers</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">StructOpt book</h1>
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2><a class="header" href="#custom-string-parsers" id="custom-string-parsers">Custom string parsers</a></h2>
+<p>If the field type does not have a <code>FromStr</code> implementation, or you would
+like to provide a custom parsing scheme other than <code>FromStr</code>, you may
+provide a custom string parser using <code>parse(...)</code> like this:</p>
+<pre><code># use structopt::StructOpt;
+# fn main() {}
+use std::num::ParseIntError;
+use std::path::PathBuf;
+
+fn parse_hex(src: &amp;str) -&gt; Result&lt;u32, ParseIntError&gt; {
+    u32::from_str_radix(src, 16)
+}
+
+#[derive(StructOpt)]
+struct HexReader {
+    #[structopt(short, parse(try_from_str = parse_hex))]
+    number: u32,
+    #[structopt(short, parse(from_os_str))]
+    output: PathBuf,
+}
+</code></pre>
+<p>There are five kinds of custom parsers:</p>
+<table><thead><tr><th>Kind</th><th>Signature</th><th>Default</th></tr></thead><tbody>
+<tr><td><code>from_str</code></td><td><code>fn(&amp;str) -&gt; T</code></td><td><code>::std::convert::From::from</code></td></tr>
+<tr><td><code>try_from_str</code></td><td><code>fn(&amp;str) -&gt; Result&lt;T, E&gt;</code></td><td><code>::std::str::FromStr::from_str</code></td></tr>
+<tr><td><code>from_os_str</code></td><td><code>fn(&amp;OsStr) -&gt; T</code></td><td><code>::std::convert::From::from</code></td></tr>
+<tr><td><code>try_from_os_str</code></td><td><code>fn(&amp;OsStr) -&gt; Result&lt;T, OsString&gt;</code></td><td>(no default function)</td></tr>
+<tr><td><code>from_occurrences</code></td><td><code>fn(u64) -&gt; T</code></td><td><code>value as T</code></td></tr>
+<tr><td><code>from_flag</code></td><td><code>fn(bool) -&gt; T</code></td><td><code>::std::convert::From::from</code></td></tr>
+</tbody></table>
+<p>The <code>from_occurrences</code> parser is special. Using <code>parse(from_occurrences)</code>
+results in the <em>number of flags occurrences</em> being stored in the relevant
+field or being passed to the supplied function. In other words, it converts
+something like <code>-vvv</code> to <code>3</code>. This is equivalent to
+<code>.takes_value(false).multiple(true)</code>. Note that the default parser can only
+be used with fields of integer types (<code>u8</code>, <code>usize</code>, <code>i64</code>, etc.).</p>
+<p>The <code>from_flag</code> parser is also special. Using <code>parse(from_flag)</code> or
+<code>parse(from_flag = some_func)</code> will result in the field being treated as a
+flag even if it does not have type <code>bool</code>.</p>
+<p>When supplying a custom string parser, <code>bool</code> will not be treated specially:</p>
+<table><thead><tr><th>Type</th><th>Effect</th><th>Added method call to <code>clap::Arg</code></th></tr></thead><tbody>
+<tr><td><code>Option&lt;T&gt;</code></td><td>optional argument</td><td><code>.takes_value(true).multiple(false)</code></td></tr>
+<tr><td><code>Vec&lt;T&gt;</code></td><td>list of arguments</td><td><code>.takes_value(true).multiple(true)</code></td></tr>
+<tr><td><code>T</code></td><td>required argument</td><td><code>.takes_value(true).multiple(false).required(!has_default)</code></td></tr>
+</tbody></table>
+<p>In the <code>try_from_*</code> variants, the function will run twice on valid input:
+once to validate, and once to parse. Hence, make sure the function is
+side-effect-free.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="flattening.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="flattening.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+        
+        
+        <script type="text/javascript">
+            window.playpen_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

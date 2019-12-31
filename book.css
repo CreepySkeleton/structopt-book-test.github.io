@@ -1,0 +1,13 @@
+div.block {
+    border-radius: 5px;
+    padding: 10px;
+    color: #0f3b66;
+}
+
+div.note {
+    background-color: #e4f0fb;
+}
+
+div.important {
+    background-color: #f6b73c;
+}
