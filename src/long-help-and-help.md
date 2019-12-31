@@ -1,6 +1,6 @@
 ### `long_help` and `--help`
 
-A message passed to [`App::long_help`] or [`Arg::long_about`] will be displayed whenever
+A message passed to [`App::long_about`] or [`Arg::long_help`] will be displayed whenever
 your program is called with `--help` instead of `-h`. Of course, you can
 use them via raw methods as described [above](#help-messages).
 

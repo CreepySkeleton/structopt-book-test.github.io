@@ -7,4 +7,12 @@ title = "StructOpt book"
 description = "The detailed description of `derive(StructOpt)`"
 
 [build]
-build-dir = "docs/"
+build-dir = "book/"
+
+[output.html]
+
+[output.linkcheck]
+follow-web-links = true
+user-agent = "checking for broken links (https://github.com/CreepySkeleton/structopt-book-test.github.io)"
+cache-timeout = 43200
+warning-policy = "error"
