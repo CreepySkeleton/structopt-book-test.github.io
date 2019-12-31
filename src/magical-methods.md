@@ -1,5 +1,4 @@
-# MagicalMethods
-
+## MagicalMethods
 
 They are the reason why `structopt` is so easy to use and convenient in most cases.
 Many of them have defaults, some of them get used even if not mentioned.

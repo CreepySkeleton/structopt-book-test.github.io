@@ -23,9 +23,10 @@ via `#[structopt(verbatim_doc_comment)]` attribute.
 
 **This attribute must be applied to each field separately**, there's no global switch.
 
-**Important:**
-______________
-Keep in mind that `structopt` will *still* remove one leading space from each
+
+<div class="important block">
+
+**Important:** Keep in mind that `structopt` will *still* remove one leading space from each
 line, even if this attribute is present, to allow for a space between
 `///` and the content.
 
@@ -47,7 +48,8 @@ Hello!
 ///
 /// Hello!
 ```
-______________
+
+</div>
 
 [`App::about`]:      https://docs.rs/clap/2/clap/struct.App.html#method.about
 [`App::long_about`]: https://docs.rs/clap/2/clap/struct.App.html#method.long_about

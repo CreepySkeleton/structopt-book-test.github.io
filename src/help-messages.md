@@ -37,15 +37,16 @@ Doc comments on [top-level](#magical-methods) will be turned into
 `App::about/long_about` call (see below), doc comments on field-level are
 `Arg::help/long_help` calls.
 
-**Important:**
-_________________
+<div class="important block">
 
-Raw methods have priority over doc comments!
+**Important:** Raw methods have priority over doc comments!
 
 **Top level doc comments always generate `App::about/long_about` calls!**
 If you really want to use the `App::help/long_help` methods (you likely don't),
 use a raw method to override the `App::about` call generated from the doc comment.
-__________________
+
+</div>
+
 
 [`App::about`]:      https://docs.rs/clap/2/clap/struct.App.html#method.about
 [`App::long_about`]: https://docs.rs/clap/2/clap/struct.App.html#method.long_about

@@ -10,6 +10,7 @@ description = "The detailed description of `derive(StructOpt)`"
 build-dir = "book/"
 
 [output.html]
+additional-css = ["book.css"]
 
 [output.linkcheck]
 follow-web-links = true

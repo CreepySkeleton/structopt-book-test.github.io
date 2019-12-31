@@ -51,10 +51,11 @@ corresponds to a `clap::App`, its fields correspond to `clap::Arg`
 (unless they're [subcommands](#subcommands)),
 and you can adjust these apps and args by `#[structopt(...)]` [attributes](#attributes).
 
-**Note:**
-_________________
-Keep in mind that `StructOpt` trait is more than just `from_args` method.
+<div class="note block">
+
+**Note:** Keep in mind that `StructOpt` trait is more than just `from_args` method.
 It has a number of additional features, including access to underlying
 `clap::App` via `StructOpt::clap()`. See the
 [trait's reference documentation](trait.StructOpt.html).
-_________________
+
+</div>
