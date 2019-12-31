@@ -1,0 +1,7 @@
+[book]
+authors = ["CreepySkeleton"]
+language = "en"
+multilingual = false
+src = "src"
+title = "StructOpt book"
+description = "The detailed description of `derive(StructOpt)`"
